@@ -18,10 +18,10 @@
 * [Download and install the latest version](https://github.com/iamadamdev/bypass-paywalls-chrome/releases/latest/download/bypass-paywalls-firefox.xpi)
 
 **Notes**
-* Every time you open Chrome it may warn you about running extensions in developer mode, just click &#128473; to keep the extension enabled.
+* Every time you open Chrome it may warn you about running extensions in developer mode, just click &#10005; to keep the extension enabled.
 * You will be logged out for any site you have checked.
 * This extension works best alongside the adblocker uBlock Origin.
-* With the Firefox version you get automatic updates.
+* On the Firefox version automatic updates are enabled.
 
 ### Bypass the following sites' paywalls with this extension:
 
@@ -109,6 +109,7 @@
 [Seeking Alpha](https://seekingalpha.com)\
 [SOFREP](https://sofrep.com)\
 [Statista](https://www.statista.com)\
+[Star Tribune](https://www.startribune.com)\
 [SunSentinel](https://www.sun-sentinel.com)\
 [Tech in Asia](https://www.techinasia.com)\
 [Telegraaf](https://www.telegraaf.nl)\

@@ -77,6 +77,14 @@ if (matchDomain('elmercurio.com')) {
   const paywall = document.querySelector('.article__component.article__component--paywall-module-notification');
   removeDOMElement(paywall);
 } else if (matchDomain('washingtonpost.com')) {
+  // Remove all elements with the id contains 'paywall'
+  document.querySelectorAll('div[data-qa="paywall"]').forEach(function (el) {
+    removeDOMElement(el);
+  });
+  const html = document.querySelector('html');
+  html.removeAttribute('style');
+  const body = document.querySelector('body');
+  body.removeAttribute('style');
   if (window.location.href.includes('/gdpr-consent/')) {
     const freeButton = document.querySelector('.gdpr-consent-container .continue-btn.button.free');
     if (freeButton) { freeButton.click(); }
@@ -250,6 +258,8 @@ if (matchDomain('elmercurio.com')) {
   // The class of banner is like 'overlayFooter__wrapper--3DhFn', which is hard to select exactly
   const subscribeBanner = document.querySelector('[class*=overlayFooter__wrapper]');
   removeDOMElement(subscribeBanner);
+  const body = document.querySelector('body');
+  removeClassesByPrefix(body, 'body__obscureContent');
 } else if (matchDomain('leparisien.fr')) {
   window.removeEventListener('scroll', this.scrollListener);
   const paywall = document.querySelector('.relative.piano-paywall.below_nav.sticky');
@@ -355,6 +365,78 @@ if (matchDomain('elmercurio.com')) {
 } else if (matchDomain('thesaturdaypaper.com.au')) {
   const paywall = document.querySelector('div.paywall-hard-always-show');
   removeDOMElement(paywall);
+} else if (matchDomain('lesechos.fr') && window.location.href.match(/-\d{6,}/)) {
+  window.setTimeout(function () {
+    const url = window.location.href;
+    const html = document.documentElement.outerHTML;
+    const split1 = html.split('window.__PRELOADED_STATE__')[1];
+    const split2 = split1.split('</script>')[0].trim();
+    const state = split2.substr(1, split2.length - 2);
+    try {
+      const data = JSON.parse(state);
+      const article = data.article.data.stripes[0].mainContent[0].data.description;
+      const urlLoaded = data.article.data.path;
+      if (!url.includes(urlLoaded)) { document.location.reload(true); }
+      const paywallNode = document.querySelector('.post-paywall');
+      if (paywallNode) {
+        const contentNode = document.createElement('div');
+        const parser = new DOMParser();
+        const articleHtml = parser.parseFromString('<div id="bypass">' + article + '</div>', 'text/html');
+        const articlePar = articleHtml.querySelector('div#bypass');
+        if (articlePar) {
+          contentNode.appendChild(articlePar);
+          contentNode.className = paywallNode.className;
+          paywallNode.parentNode.insertBefore(contentNode, paywallNode);
+          removeDOMElement(paywallNode);
+          const paywallLastChildNode = document.querySelector('.post-paywall  > :last-child');
+          if (paywallLastChildNode) {
+            paywallLastChildNode.setAttribute('style', 'height: auto !important; overflow: hidden !important; max-height: none !important;');
+          }
+        }
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+    const adBlocks = document.querySelectorAll('.jzxvkd-1');
+    for (const adBlock of adBlocks) {
+      adBlock.setAttribute('style', 'display:none');
+    }
+    const aboBanner = document.querySelector('[class^="pgxf3b"]');
+    removeDOMElement(aboBanner);
+  }, 500); // Delay (in milliseconds)
+} else if (matchDomain('startribune.com')) {
+  // remove active class from all elements
+  document.querySelectorAll('div.ReactModalPortal').forEach(function (el) {
+    removeDOMElement(el);
+  });
+  // Enable Scroll. Reveal Hiddlen Paragraph
+  document.getElementsByTagName('body')[0].removeAttribute('class');
+} else if (matchDomain('seattletimes.com')) {
+  window.setTimeout(function () {
+    // remove modal class from all elements
+    document.querySelectorAll('div.modal').forEach(function (el) {
+      removeDOMElement(el);
+    });
+    // Remove Blurred Style from all matching Divs
+    document.getElementById('container').removeAttribute('style');
+    document.querySelectorAll('div[style~="filter"]').forEach(function (el) {
+      el.removeAttribute('style');
+    });
+    document
+      .querySelectorAll('div[class~="NewsletterSignupSplash"]')
+      .forEach(function (el) {
+        el.removeAttribute('class');
+      });
+  }, 2000); // Delay (in milliseconds)
+} else if (matchDomain('theatlantic.com')) {
+  // Remove all nudge elements
+  document.querySelectorAll('div[class*="c-nudge"]').forEach(function (el) {
+    removeDOMElement(el);
+  });
+  // Remove all FancyBox ads
+  document.querySelectorAll('div[class*="fancybox"]').forEach(function (el) {
+    removeDOMElement(el);
+  });
 }
 
 function matchDomain (domains) {
